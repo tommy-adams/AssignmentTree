@@ -16,15 +16,14 @@ import { withStyles } from "@material-ui/core/styles";
 import styles from "./style"; 
 
 const  EnhancedTable = (props) => {
-  const { classes, columnData, data } = props;
+  const { classes, columnData, data, rows } = props;
+  console.log(rows);
 
   const [order, setOrder] = React.useState("asc");
   const [orderedBy, setOrderedBy] = React.useState(columnData[3].id);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState(orderBy(data, orderedBy, order));
-
-  const rows = data.length;
 
   const handleSort = columnName => {
     if (orderedBy === columnName) {
@@ -78,10 +77,11 @@ const  EnhancedTable = (props) => {
                       key={r.name}
                       hover
                     >
-                      <TableCell>{r.class}</TableCell>
+                      <TableCell>{r.class_id}</TableCell>
                       <TableCell>{r.name}</TableCell>
                       <TableCell>{r.description}</TableCell>
                       <TableCell>{r.due}</TableCell>
+                      <TableCell>{r.completed ? "Yes" : "No"}</TableCell>
                       <TableCell>
                         <IconButton>
                           <MoreVertIcon />
@@ -111,7 +111,8 @@ const  EnhancedTable = (props) => {
 EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired,
   columnData: PropTypes.array.isRequired,
-  data: PropTypes.array.isRequired
+  data: PropTypes.array.isRequired,
+  rows: PropTypes.number.isRequired
 };
 
 export default withStyles(styles)(EnhancedTable);
