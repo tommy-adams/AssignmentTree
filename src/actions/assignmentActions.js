@@ -9,3 +9,15 @@ export const loadAssignments = query => async dispatch => {
       payload: await assignment.data
     }));
 };
+
+export const createAssignment = data => async dispatch => {
+  const reqOptions = {
+    headers: { "Content-Type": "application/json" }
+  };
+
+  await axios.post("/assignments/create", data, reqOptions)
+    .then(async assignment => dispatch({
+      type: types.CREATE_ASSIGNMENT_SUCCESS,
+      payload: await assignment.data
+    }));
+};

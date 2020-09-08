@@ -15,7 +15,21 @@ const styles = {
     marginTop: "-55px",
     fontWeight: 300,
     fontSize: 25,
-    marginBottom: 100
+    marginBottom: 50
+  },
+  selectForm: {
+    minWidth: "25%",
+    marginBottom: 25
+  },
+  fab: {
+    position: "fixed",
+    right: "3%",
+    bottom: "5%",
+    backgroundColor: "#FFF",
+    color: "#8C1515"
+  },
+  selectIcon: {
+    fill: "#FFF",
   }
 };
 

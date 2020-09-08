@@ -3,7 +3,7 @@ const styles = {
     width: "100%"
   },
   paper: {
-    width: "85%",
+    width: "90%",
     position: "absolute",
     left: "50%",
     transform: "translateX(-50%)"

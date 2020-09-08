@@ -17,7 +17,6 @@ import styles from "./style";
 
 const  EnhancedTable = (props) => {
   const { classes, columnData, data, rows } = props;
-  console.log(rows);
 
   const [order, setOrder] = React.useState("asc");
   const [orderedBy, setOrderedBy] = React.useState(columnData[3].id);
@@ -32,7 +31,7 @@ const  EnhancedTable = (props) => {
     }
 
     setOrderedBy(columnName);
-    setItems(orderBy(items, orderedBy, order));
+    setItems(orderBy(data, orderedBy, order));
   };
 
   const handleChangePage = (e, p) => {
@@ -46,7 +45,7 @@ const  EnhancedTable = (props) => {
   const handleSearch = e => {
     const value = e.target.value.toLowerCase();
     const filteredData = data.filter(d =>
-      d.class.toLowerCase().includes(value) ||
+      d.class_name.toLowerCase().includes(value) ||
       d.name.toLowerCase().includes(value)
     );
     setItems(orderBy(filteredData, orderedBy, order));
@@ -77,7 +76,7 @@ const  EnhancedTable = (props) => {
                       key={r.name}
                       hover
                     >
-                      <TableCell>{r.class_id}</TableCell>
+                      <TableCell>{r.class_name}</TableCell>
                       <TableCell>{r.name}</TableCell>
                       <TableCell>{r.description}</TableCell>
                       <TableCell>{r.due}</TableCell>
