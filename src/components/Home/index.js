@@ -100,7 +100,6 @@ class Home extends Component {
       classList
     } = this.props;
     const { selectedClass, modalOpen, modalMode } = this.state;
-
     const filteredData = selectedClass === 0 ? assignments : assignments.filter(a => a.class_id === selectedClass);
     const numRows = selectedClass === 0 ? total : filteredData.length;
 

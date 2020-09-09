@@ -29,7 +29,7 @@ class Header extends Component {
 
     return (
       <>
-        {menuOpen && <Menu />}
+        {menuOpen && <Menu closeHandler={this.onMenuClick} />}
         <div className={classes.root}>
           <IconButton onClick={this.onMenuClick} className={classes.menuBtn}>
             <MenuIcon className={classes.icon} />

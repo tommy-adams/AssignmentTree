@@ -22,7 +22,14 @@ const  EnhancedTable = (props) => {
   const [orderedBy, setOrderedBy] = React.useState(columnData[3].id);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [items, setItems] = React.useState(orderBy(data, orderedBy, order));
+  const [items, setItems] = React.useState(data);
+  const [searchContent, setSearchContent] = React.useState(false);
+  
+  // ensuring items will always match the ordered data (even when a new assignment is added)
+  // does not apply if the search bar is in use
+  if (!searchContent && JSON.stringify(items) !== JSON.stringify(orderBy(data, orderedBy, order))) {
+    setItems(orderBy(data, orderedBy, order));
+  }
 
   const handleSort = columnName => {
     if (orderedBy === columnName) {
@@ -45,10 +52,30 @@ const  EnhancedTable = (props) => {
   const handleSearch = e => {
     const value = e.target.value.toLowerCase();
     const filteredData = data.filter(d =>
-      d.class_name.toLowerCase().includes(value) ||
       d.name.toLowerCase().includes(value)
     );
-    setItems(orderBy(filteredData, orderedBy, order));
+    
+    if (e.target.value === "") {
+      setSearchContent(false);
+    } else {
+      setSearchContent(true);
+    }
+
+    setItems(orderBy(filteredData, orderedBy, order)); 
+  };
+
+  // format due date to MM/dd/yyyy
+  const formatDate = date => {
+    const dueDate =  new Date(date);
+    const year = dueDate.getFullYear();
+
+    let month = (1 + dueDate.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+
+    let day = dueDate.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+
+    return month + "/" + day + "/" + year;
   };
 
   return (
@@ -73,13 +100,13 @@ const  EnhancedTable = (props) => {
                 .map(r => {
                   return (
                     <TableRow
-                      key={r.name}
+                      key={r._id}
                       hover
                     >
                       <TableCell>{r.class_name}</TableCell>
                       <TableCell>{r.name}</TableCell>
                       <TableCell>{r.description}</TableCell>
-                      <TableCell>{r.due}</TableCell>
+                      <TableCell>{formatDate(r.due)}</TableCell>
                       <TableCell>{r.completed ? "Yes" : "No"}</TableCell>
                       <TableCell>
                         <IconButton>

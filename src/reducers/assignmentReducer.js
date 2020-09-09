@@ -9,7 +9,7 @@ const loadAssignments = (state, assignments) => {
 };
 
 const createAssignment = (state, newAssignment) => {
-	const { assignments, total } = this.state;
+	const { assignments, total } = state;
 	return { ...state, assignments: [ ...assignments, newAssignment ], total: total + 1 };
 };
 

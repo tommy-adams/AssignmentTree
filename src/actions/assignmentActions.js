@@ -20,4 +20,6 @@ export const createAssignment = data => async dispatch => {
       type: types.CREATE_ASSIGNMENT_SUCCESS,
       payload: await assignment.data
     }));
+  
+  return "Created!";
 };

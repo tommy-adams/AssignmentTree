@@ -15,10 +15,6 @@ import { KeyboardDatePicker } from "@material-ui/pickers";
 import { withStyles } from "@material-ui/core/styles";
 import styles from "./style";
 
-const mapStateToProps = state => {
-
-};
-
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators({ ...assignmentAction }, dispatch)
 });
@@ -58,7 +54,7 @@ class AssignmentModal extends Component {
   };
 
   onSave = async () => {
-    const { actions } = this.props;
+    const { actions, closeHandler } = this.props;
     const { name, classId, className, dueDate, description } = this.state;
     const data = {
       class_id: classId,
@@ -71,6 +67,7 @@ class AssignmentModal extends Component {
 
     try {
       await actions.createAssignment(data);
+      closeHandler();
     } catch (err) {
       console.error(err);
     }
@@ -157,4 +154,4 @@ class AssignmentModal extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(AssignmentModal));
+export default connect(null, mapDispatchToProps)(withStyles(styles)(AssignmentModal));
