@@ -9,6 +9,10 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Fab from "@material-ui/core/Fab";
+import Popover from "@material-ui/core/Popover";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 import AddIcon from "@material-ui/icons/Add";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Header from "../common/Header";
@@ -81,6 +85,51 @@ class Home extends Component {
     }
   };
 
+  renderPopMenuItems = (open, handleClose, anchorEl, item) => {
+    return (
+      <Popover
+        open={open}
+        onClose={handleClose}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+      >
+        <List>
+          <ListItem button>
+            <ListItemText primary="Edit" />
+          </ListItem>
+          <ListItem button onClick={e => this.markItemComplete(item)}>
+            <ListItemText primary="Mark as completed" />
+          </ListItem>
+          <ListItem button>
+            <ListItemText primary="Delete" />
+          </ListItem>
+        </List>
+      </Popover>
+    );
+  };
+
+  markItemComplete = async target => {
+    const { actions } = this.props;
+
+    const data = {
+      _id: target._id,
+      class_id: target.class_id,
+      class_name: target.class_name,
+      due: target.due,
+      description: target.description,
+      completed: true,
+      name: target.name
+    };
+    try {
+      await actions.updateAssignment(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   handleSelect = e => {
     this.setState({ selectedClass: e.target.value });
   };
@@ -137,7 +186,7 @@ class Home extends Component {
               </Select>
             </FormControl>
           }
-          {total && <EnhancedTable columnData={columnData} data={filteredData} rows={numRows} />}
+          <EnhancedTable columnData={columnData} data={filteredData} rows={numRows || 0} menuFunc={this.renderPopMenuItems} />
           <Fab 
             className={classes.fab}
             onClick={() => this.setState({ modalOpen: true, modalMode: "create" })}

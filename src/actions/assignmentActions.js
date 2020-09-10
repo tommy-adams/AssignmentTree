@@ -23,3 +23,17 @@ export const createAssignment = data => async dispatch => {
   
   return "Created!";
 };
+
+export const updateAssignment = data => async dispatch => {
+  const reqOptions = {
+    headers: { "Content-Type": "application/json" }
+  };
+
+  await axios.patch("/assignments/update", data, reqOptions)
+    .then(async assignment => dispatch({
+      type: types.UPDATE_ASSIGNMENT_SUCCESS,
+      payload: await assignment.data
+    }));
+  
+  return "Updated!";
+};

@@ -9,3 +9,17 @@ export const loadClasses = query => async dispatch => {
       payload: await c.data
     }));
 };
+
+export const createClass = data => async dispatch => {
+  const reqOptions = {
+    headers: { "Content-Type": "application/json" }
+  };
+
+  await axios.post("/classes/create", data, reqOptions)
+    .then(async c => dispatch({
+      type: types.CREATE_CLASS_SUCCESS,
+      payload: await c.data
+    }));
+  
+  return "Created!";
+};

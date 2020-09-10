@@ -31,7 +31,9 @@ class Classes extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false
+      loading: false,
+      formOpen: false,
+      formMode: ""
     };
   };
 
@@ -54,8 +56,21 @@ class Classes extends Component {
     }
   };
 
+  toggleForm = mode => {
+    const { formOpen, formMode } = this.state;
+
+    if (formMode !== "") {
+      this.setState({ formMode: "" });
+    } else {
+      this.setState({ formMode: mode });
+    }
+
+    this.setState({ formOpen: !formOpen });
+  };
+
   render() {
     const { classes, courses } = this.props;
+    const { formOpen, formMode } = this.state;
 
     return (
       <>
@@ -72,13 +87,13 @@ class Classes extends Component {
                   </div>
                 );
               })}
-              <IconButton style={{ marginLeft: "75%" }}>
+              <IconButton onClick={e => this.toggleForm("create")} style={{ marginLeft: "75%" }}>
                 <CreateNewFolderIcon style={{ color: "#FFF", transform: "scale(2)" }}/>
               </IconButton>
             </Grid>
             <Grid item xs={6} style={{ paddingTop: 75 }}>
               <div>
-                <ClassForm />
+                {formOpen && <ClassForm closeHandler={this.toggleForm} mode={formMode} />}
               </div>
             </Grid>
           </Grid>

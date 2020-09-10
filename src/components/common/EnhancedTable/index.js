@@ -16,7 +16,7 @@ import { withStyles } from "@material-ui/core/styles";
 import styles from "./style"; 
 
 const  EnhancedTable = (props) => {
-  const { classes, columnData, data, rows } = props;
+  const { classes, columnData, data, rows, menuFunc } = props;
 
   const [order, setOrder] = React.useState("asc");
   const [orderedBy, setOrderedBy] = React.useState(columnData[3].id);
@@ -24,6 +24,8 @@ const  EnhancedTable = (props) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState(data);
   const [searchContent, setSearchContent] = React.useState(false);
+  const [optionsOpen, setOptionsOpen] = React.useState(false);
+  const [moreAnchor, setMoreAnchor] = React.useState(null);
   
   // ensuring items will always match the ordered data (even when a new assignment is added)
   // does not apply if the search bar is in use
@@ -62,6 +64,11 @@ const  EnhancedTable = (props) => {
     }
 
     setItems(orderBy(filteredData, orderedBy, order)); 
+  };
+
+  const onMoreClick = e => {
+    setMoreAnchor(e.currentTarget);
+    setOptionsOpen(!optionsOpen);
   };
 
   // format due date to MM/dd/yyyy
@@ -109,10 +116,16 @@ const  EnhancedTable = (props) => {
                       <TableCell>{formatDate(r.due)}</TableCell>
                       <TableCell>{r.completed ? "Yes" : "No"}</TableCell>
                       <TableCell>
-                        <IconButton>
+                        <IconButton onClick={onMoreClick}>
                           <MoreVertIcon />
                         </IconButton>
                       </TableCell>
+                      {optionsOpen && menuFunc(
+                        optionsOpen,
+                        () => setOptionsOpen(!optionsOpen),
+                        moreAnchor,
+                        r
+                      )}
                     </TableRow>
                   );
                 })
@@ -138,7 +151,8 @@ EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired,
   columnData: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
-  rows: PropTypes.number.isRequired
+  rows: PropTypes.number.isRequired,
+  menuFunc: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(EnhancedTable);
