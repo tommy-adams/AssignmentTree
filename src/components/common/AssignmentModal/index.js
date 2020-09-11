@@ -103,10 +103,8 @@ class AssignmentModal extends Component {
   };
 
   render() {
-    const { classes, classList, closeHandler, activeData, mode } = this.props;
+    const { classes, classList, closeHandler, mode } = this.props;
     const { dueDate, classId, name, description } = this.state;
-
-    console.log(activeData);
 
     return (
       <div className={classes.root}>

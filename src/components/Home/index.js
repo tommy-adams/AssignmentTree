@@ -135,7 +135,7 @@ class Home extends Component {
   onDelete = async (target, closeHandler) => {
     const { actions } = this.props;
     const query = `?_id=${target._id}`;
-    console.log(target);
+
     try {
       await actions.deleteAssignment(query);
     } catch (err) {

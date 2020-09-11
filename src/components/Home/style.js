@@ -1,7 +1,7 @@
 const styles = {
   root: {
     backgroundColor: "rgba(140, 21, 21, 0.95)",
-    height: 3000,
+    height: 1000,
     padding: "75px 75px",
   },
   title: {
