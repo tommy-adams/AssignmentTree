@@ -11,6 +11,7 @@ import Header from "../common/Header";
 import ClassForm from "../common/ClassForm";
 import { withStyles } from "@material-ui/core/styles";
 import styles from "./style";
+import orderBy from "lodash/orderBy";
 
 const mapStateToProps = state => {
   const { schedule } = state.sched;
@@ -33,7 +34,8 @@ class Classes extends Component {
     this.state = {
       loading: false,
       formOpen: false,
-      formMode: ""
+      formMode: "",
+      activeData: {}
     };
   };
 
@@ -56,21 +58,35 @@ class Classes extends Component {
     }
   };
 
-  toggleForm = mode => {
+  toggleForm = (mode, stayOpen) => {
     const { formOpen, formMode } = this.state;
 
-    if (formMode !== "") {
+    if (!stayOpen && formMode !== "") {
       this.setState({ formMode: "" });
     } else {
       this.setState({ formMode: mode });
     }
 
-    this.setState({ formOpen: !formOpen });
+    if (stayOpen) {
+      this.setState({ formOpen: false });
+      setTimeout(() => this.setState({ formOpen: true }), 100);
+    } else {
+      this.setState({ formOpen: !formOpen });
+    }
+  };
+
+  onEdit = item => {
+    this.setState({ activeData: item });
+    this.setState({ formMode: "edit" });
+    this.setState({ formOpen: false });
+    setTimeout(() => this.setState({ formOpen: true }), 100);
   };
 
   render() {
     const { classes, courses } = this.props;
-    const { formOpen, formMode } = this.state;
+    const { formOpen, formMode, activeData } = this.state;
+
+    const orderedCourses = orderBy(courses, "name", "asc");
 
     return (
       <>
@@ -79,21 +95,24 @@ class Classes extends Component {
           <Grid container>
             <Grid item xs={6}>
               <p className={classes.title}>Class List</p>
-              {courses.map(c => {
+              {orderedCourses.map(c => {
                 return (
-                  <div className={classes.classDiv}>
+                  <div key={c._id} className={classes.classDiv} onClick={e => this.onEdit(c)}>
                     <FolderIcon style={{ color: "#FFF", transform: "scale(3)" }}/>
                     <p className={classes.divText}>{c.name}</p>
                   </div>
                 );
               })}
-              <IconButton onClick={e => this.toggleForm("create")} style={{ marginLeft: "75%" }}>
+              <IconButton
+                onClick={e => formOpen ? this.toggleForm("create", true) : this.toggleForm("create", false)}
+                style={{ marginLeft: "75%" }}
+              >
                 <CreateNewFolderIcon style={{ color: "#FFF", transform: "scale(2)" }}/>
               </IconButton>
             </Grid>
             <Grid item xs={6} style={{ paddingTop: 75 }}>
               <div>
-                {formOpen && <ClassForm closeHandler={this.toggleForm} mode={formMode} />}
+                {formOpen && <ClassForm closeHandler={this.toggleForm} mode={formMode} activeData={activeData} />}
               </div>
             </Grid>
           </Grid>

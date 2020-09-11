@@ -23,3 +23,31 @@ export const createClass = data => async dispatch => {
   
   return "Created!";
 };
+
+export const updateClass = data => async dispatch => {
+  const reqOptions = {
+    headers: { "Content-Type": "application/json" }
+  };
+
+  await axios.patch("/classes/update", data, reqOptions)
+    .then(async c => dispatch({
+      type: types.UPDATE_CLASS_SUCCESS,
+      payload: await c.data
+    }));
+  
+  return "Updated!";
+};
+
+export const deleteClass = query => async dispatch => {
+  const reqOptions = {
+    headers: { "Authentication": "***" }
+  };
+
+  await axios.delete(`/classes/delete${query}`, reqOptions)
+    .then(async c => dispatch({
+      type: types.DELETE_CLASS_SUCCESS,
+      payload: await c.data
+    }));
+  
+  return "Deleted!";
+};

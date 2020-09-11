@@ -26,6 +26,7 @@ const  EnhancedTable = (props) => {
   const [searchContent, setSearchContent] = React.useState(false);
   const [optionsOpen, setOptionsOpen] = React.useState(false);
   const [moreAnchor, setMoreAnchor] = React.useState(null);
+  const [selected, setSelected] = React.useState({});
   
   // ensuring items will always match the ordered data (even when a new assignment is added)
   // does not apply if the search bar is in use
@@ -66,9 +67,10 @@ const  EnhancedTable = (props) => {
     setItems(orderBy(filteredData, orderedBy, order)); 
   };
 
-  const onMoreClick = e => {
+  const onMoreClick = (e, item) => {
     setMoreAnchor(e.currentTarget);
     setOptionsOpen(!optionsOpen);
+    setSelected(item);
   };
 
   // format due date to MM/dd/yyyy
@@ -116,7 +118,7 @@ const  EnhancedTable = (props) => {
                       <TableCell>{formatDate(r.due)}</TableCell>
                       <TableCell>{r.completed ? "Yes" : "No"}</TableCell>
                       <TableCell>
-                        <IconButton onClick={onMoreClick}>
+                        <IconButton onClick={e => onMoreClick(e, r)}>
                           <MoreVertIcon />
                         </IconButton>
                       </TableCell>
@@ -124,7 +126,7 @@ const  EnhancedTable = (props) => {
                         optionsOpen,
                         () => setOptionsOpen(!optionsOpen),
                         moreAnchor,
-                        r
+                        selected
                       )}
                     </TableRow>
                   );

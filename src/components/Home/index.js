@@ -61,7 +61,8 @@ class Home extends Component {
       loading: false,
       selectedClass: 0,
       modalOpen: false,
-      modalMode: ""
+      modalMode: "",
+      activeData: {}
     };
   };
 
@@ -97,13 +98,13 @@ class Home extends Component {
         }}
       >
         <List>
-          <ListItem button>
+          <ListItem button onClick={e => this.onEdit(item, handleClose)}>
             <ListItemText primary="Edit" />
           </ListItem>
-          <ListItem button onClick={e => this.markItemComplete(item)}>
-            <ListItemText primary="Mark as completed" />
+          <ListItem button onClick={e => this.markItemComplete(item, handleClose)}>
+            <ListItemText primary={!item.completed ? "Mark as complete" : "Mark as incomplete"} />
           </ListItem>
-          <ListItem button>
+          <ListItem button onClick={e => this.onDelete(item, handleClose)}>
             <ListItemText primary="Delete" />
           </ListItem>
         </List>
@@ -111,7 +112,7 @@ class Home extends Component {
     );
   };
 
-  markItemComplete = async target => {
+  markItemComplete = async (target, closeHandler) => {
     const { actions } = this.props;
 
     const data = {
@@ -120,7 +121,7 @@ class Home extends Component {
       class_name: target.class_name,
       due: target.due,
       description: target.description,
-      completed: true,
+      completed: !target.completed,
       name: target.name
     };
     try {
@@ -128,6 +129,26 @@ class Home extends Component {
     } catch (err) {
       console.error(err);
     }
+    closeHandler();
+  };
+
+  onDelete = async (target, closeHandler) => {
+    const { actions } = this.props;
+    const query = `?_id=${target._id}`;
+    console.log(target);
+    try {
+      await actions.deleteAssignment(query);
+    } catch (err) {
+      console.error(err);
+    }
+    closeHandler();
+  };
+
+  onEdit = (target, closeHandler) => {
+    this.setState({ modalMode: "edit" });
+    this.setState({ activeData: target });
+    this.toggleModal();
+    closeHandler();
   };
 
   handleSelect = e => {
@@ -148,7 +169,7 @@ class Home extends Component {
       },
       classList
     } = this.props;
-    const { selectedClass, modalOpen, modalMode } = this.state;
+    const { selectedClass, modalOpen, modalMode, activeData } = this.state;
     const filteredData = selectedClass === 0 ? assignments : assignments.filter(a => a.class_id === selectedClass);
     const numRows = selectedClass === 0 ? total : filteredData.length;
 
@@ -160,6 +181,7 @@ class Home extends Component {
             mode={modalMode}
             closeHandler={this.toggleModal}
             classList={classList}
+            activeData={activeData}
           />
         }
         <div className={classes.root}>

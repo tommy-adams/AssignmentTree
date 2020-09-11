@@ -25,12 +25,21 @@ class AssignmentModal extends Component {
     actions: PropTypes.object.isRequired,
     mode: PropTypes.string.isRequired,
     classList: PropTypes.array.isRequired,
-    closeHandler: PropTypes.func.isRequired
+    closeHandler: PropTypes.func.isRequired,
+    activeData: PropTypes.object
   };
 
   constructor(props) {
     super(props);
-    this.state = {
+    const { activeData, mode } = props;
+    this.state = mode === "edit" ? {
+      name: activeData.name,
+      classId: activeData.class_id,
+      className: activeData.class_name,
+      dueDate: activeData.due,
+      description: activeData.description,
+      completed: activeData.completed
+    } : {
       name: "",
       classId: 0,
       className: "",
@@ -53,7 +62,7 @@ class AssignmentModal extends Component {
     this.setState({ dueDate: e });
   };
 
-  onSave = async () => {
+  onCreate = async () => {
     const { actions, closeHandler } = this.props;
     const { name, classId, className, dueDate, description } = this.state;
     const data = {
@@ -73,9 +82,31 @@ class AssignmentModal extends Component {
     }
   };
 
+  onUpdate = async () => {
+    const { actions, closeHandler } = this.props;
+    const { name, classId, className, dueDate, description, completed } = this.state;
+    const data = {
+      class_id: classId,
+      class_name: className,
+      name,
+      due: dueDate,
+      description,
+      completed
+    };
+
+    try {
+      await actions.updateAssignment(data);
+      closeHandler();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   render() {
-    const { classes, classList, closeHandler } = this.props;
-    const { dueDate, classId } = this.state;
+    const { classes, classList, closeHandler, activeData, mode } = this.props;
+    const { dueDate, classId, name, description } = this.state;
+
+    console.log(activeData);
 
     return (
       <div className={classes.root}>
@@ -90,6 +121,7 @@ class AssignmentModal extends Component {
                 className={classes.form}
                 onChange={this.handleTextChange}
                 name="name"
+                value={name}
               />
             </Grid>
             <Grid item xs={6}>
@@ -127,6 +159,7 @@ class AssignmentModal extends Component {
                 className={classes.form}
                 name="description"
                 onChange={this.handleTextChange}
+                value={description}
               />
             </Grid>
             <div className={classes.btnWrapper}>
@@ -142,9 +175,9 @@ class AssignmentModal extends Component {
                 className={classes.button}
                 variant="outlined"
                 color="primary"
-                onClick={this.onSave}
+                onClick={mode === "create" ? this.onCreate : this.onUpdate}
               >
-                CREATE
+                SAVE
               </Button>
             </div>
           </Grid>

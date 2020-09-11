@@ -29,7 +29,7 @@ const styles = {
     padding: 25
   },
   button: {
-    minWidth: "40%",
+    minWidth: "35%",
     marginRight: 15
   }
 };

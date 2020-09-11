@@ -9,6 +9,7 @@ import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import SaveIcon from "@material-ui/icons/Save";
 import CancelIcon from "@material-ui/icons/Cancel";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/core/styles";
 import styles from "./style";
 
@@ -21,15 +22,21 @@ class ClassForm extends Component {
     classes: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
     mode: PropTypes.string.isRequired,
-    closeHandler: PropTypes.func.isRequired
+    closeHandler: PropTypes.func.isRequired,
+    activeData: PropTypes.object
   };
 
   constructor(props) {
     super(props);
-    this.state = {
+    const { mode, activeData } = props;
+    this.state = mode === "create" ? {
       name: "",
       prof: "",
       subject: ""
+    } : {
+      name: activeData.name,
+      prof: activeData.professor,
+      subject: activeData.subject
     };
   };
 
@@ -37,15 +44,28 @@ class ClassForm extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  onCancel = () => {
-    const { closeHandler } = this.props;
-    this.setState({ name: "" });
-    this.setState({ prof: "" });
-    this.setState({ subject: "" });
+  onDelete = async () => {
+    const { actions, activeData, closeHandler } = this.props;
+    const id = activeData._id;
+    const query = `?_id=${id}`;
+
+    try {
+      await actions.deleteClass(query);
+    } catch (err) {
+      console.error(err);
+    }
     closeHandler();
   };
 
-  onSave = async () => {
+  onCancel = () => {
+    const { closeHandler, mode } = this.props;
+    this.setState({ name: "" });
+    this.setState({ prof: "" });
+    this.setState({ subject: "" });
+    closeHandler(mode);
+  };
+
+  onCreate = async () => {
     const { actions, closeHandler } = this.props;
     const { name, prof, subject } = this.state;
 
@@ -64,8 +84,28 @@ class ClassForm extends Component {
     closeHandler();
   };
 
+  onUpdate = async () => {
+    const { actions, closeHandler, activeData } = this.props;
+    const { name, prof, subject } = this.state;
+
+    const data = {
+      _id: activeData._id,
+      name,
+      professor: prof,
+      subject
+    };
+
+    try {
+      await actions.updateClass(data);
+    } catch (err) {
+      console.error(err);
+    }
+
+    closeHandler();
+  };
+
   render() {
-    const { classes } = this.props;
+    const { classes, mode } = this.props;
     const { name, prof, subject } = this.state;
 
     return (
@@ -100,10 +140,15 @@ class ClassForm extends Component {
             />
           </Grid>
           <Grid className={classes.btnWrapper} item xs={12}>
+            {mode === "edit" && 
+              <IconButton onClick={this.onDelete}>
+                <DeleteIcon className={classes.btn} />
+              </IconButton>
+            }
             <IconButton onClick={this.onCancel}>
               <CancelIcon className={classes.btn} />
             </IconButton>
-            <IconButton onClick={this.onSave}>
+            <IconButton onClick={mode === "create" ? this.onCreate : this.onUpdate}>
               <SaveIcon className={classes.btn} />
             </IconButton>
           </Grid>

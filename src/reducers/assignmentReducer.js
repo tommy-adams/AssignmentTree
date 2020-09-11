@@ -21,7 +21,16 @@ const updateAssignment = (state, updatedAssignment) => {
 	tempAssignments.splice(index, 1);
 	tempAssignments.push(updatedAssignment);
 	return { ...state, assignments: tempAssignments };
-}
+};
+
+const deleteAssignment = (state, deletedAssignment) => {
+	const { assignments, total } = state;
+	const tempAssignments = assignments;
+	const target = tempAssignments.filter(a => a._id === deletedAssignment._id)[0];
+	const index = tempAssignments.indexOf(target);
+	tempAssignments.splice(index, 1);
+	return { ...state, assignments: tempAssignments, total: total - 1 };
+};
 
 export default function(state = initialState, action) {
 	switch(action.type) {
@@ -31,6 +40,8 @@ export default function(state = initialState, action) {
 			return createAssignment(state, action.payload);
 		case types.UPDATE_ASSIGNMENT_SUCCESS:
 			return updateAssignment(state, action.payload);
+		case types.DELETE_ASSIGNMENT_SUCCESS:
+			return deleteAssignment(state, action.payload);
 		default:
 			return state;
 	}

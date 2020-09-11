@@ -37,3 +37,17 @@ export const updateAssignment = data => async dispatch => {
   
   return "Updated!";
 };
+
+export const deleteAssignment = query => async dispatch => {
+  const reqOptions = {
+    headers: { "Authentication": "***" }
+  };
+
+  await axios.delete(`/assignments/delete${query}`, reqOptions)
+    .then(async assignment => dispatch({
+      type: types.DELETE_ASSIGNMENT_SUCCESS,
+      payload: await assignment.data
+    }));
+  
+  return "Deleted!";
+};
