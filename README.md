@@ -8,3 +8,5 @@ Please have both Node and npm installed before cloning.
 Run ```npm install``` in the AssignmentTree directory to install all dependencies.
 
 To run the frontend, use ```npm start``` in this directory.
+
+Make sure the frontend and API are running at the same time.
